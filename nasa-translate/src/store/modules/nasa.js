@@ -1,18 +1,12 @@
 import axios from "axios";
 import { router } from "../../routes"
 const state = {
-    // counter: 0,
     baseStuff: {},
-    originalText: null
+    originalText: null,
+    apiKey: "",
 }
 
 const getters = {
-    // getDoubleCounter(state) {
-    //     return state.counter * 10
-    // },
-    // stringCounter(state) {
-    //     return `${state.counter}.kez tıklandı`
-    // },
     getBaseStuff(state) {
         return state.baseStuff
     },
@@ -20,10 +14,6 @@ const getters = {
 }
 
 const mutations = {
-    // increaseCounter(state) {
-    //     state.counter++
-    // },
-    // ,
     updateDayData(state, data) {
         if (data.text) {
             state.baseStuff.turkishLanguage = data.text
@@ -47,35 +37,22 @@ const actions = {
     // increment({ commit }) { // commit vasıtasıyla mutations nın içerisindek ifonksiyonlara erişebilirmi
     //     commit("increaseCounter")
     // },
-    getNasaDayApi({ commit }) {
+    getNasaDayApi({ commit, state }) {
         axios
             .get(
-                "https://api.nasa.gov/planetary/apod?api_key=v6qFy2GzLxg3yozIeK0yDjNSAqH5ic4NTaeC3Ehz"
+                `https://api.nasa.gov/planetary/apod?api_key=${state.apiKey}`
             )
             .then((response) => {
-                // let data = response.data;
-                // this.baseStuff = {
-                //     title: data.title,
-                //     description: data.explanation,
-                //     image: data.url, // data.hdurl,
-                //     date: data.date,
-                // };
                 commit("updateDayData", response.data)
             });
     },
     addTranslateToDatabase({ getters }, data) {
-        // if (state.baseStuff.date) {
-        //     //
-        // }
         data.originalData = getters.getBaseStuff
-        axios.post("https://nasa-ceviri-default-rtdb.firebaseio.com/translations.json", data)
-            // .then(() => {
-            // state.baseStuff.turkishTranslate = data.text
-            // })
+        axios.post(`{state.fbURL}/translations.json`, data)
         router.replace("/")
     },
     getTranslateDatabase({ commit }) {
-        axios.get("https://nasa-ceviri-default-rtdb.firebaseio.com/translations.json")
+        axios.get(`{state.fbURL}/translations.json`)
             .then((response) => {
                 let data = response.data
                 for (let key in data) {
