@@ -4,6 +4,7 @@ const state = {
     baseStuff: {},
     originalText: null,
     apiKey: "",
+    fbURL: "",
 }
 
 const getters = {
